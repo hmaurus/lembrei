@@ -6,4 +6,5 @@ export interface AlarmConfig {
   alertType: AlertType;
   isActive: boolean;
   notificationId?: string;
+  startTimestamp?: number;
 }

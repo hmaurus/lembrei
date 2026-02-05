@@ -8,9 +8,12 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useAlarmConfig } from '../src/hooks/useAlarmConfig';
+import { useCountdown } from '../src/hooks/useCountdown';
+import { calculateIntervalSeconds } from '../src/constants/alarm';
 import { HourPicker } from '../src/components/HourPicker';
 import { MinutePicker } from '../src/components/MinutePicker';
 import { AlertTypeSelector } from '../src/components/AlertTypeSelector';
+import { ActiveAlarmInfo } from '../src/components/ActiveAlarmInfo';
 
 function formatInterval(hours: number, minutes: number): string {
   const parts: string[] = [];
@@ -22,6 +25,13 @@ function formatInterval(hours: number, minutes: number): string {
 export default function HomeScreen() {
   const { config, isLoading, setHours, setMinutes, setAlertType, toggleAlarm } =
     useAlarmConfig();
+
+  const intervalSeconds = calculateIntervalSeconds(config.hours, config.minutes);
+  const { nextAlarmDate, remainingSeconds } = useCountdown(
+    config.startTimestamp,
+    intervalSeconds,
+    config.isActive,
+  );
 
   const handleToggle = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -65,6 +75,14 @@ export default function HomeScreen() {
             disabled={config.isActive}
           />
         </View>
+
+        {config.isActive && nextAlarmDate && config.startTimestamp && (
+          <ActiveAlarmInfo
+            startTimestamp={config.startTimestamp}
+            nextAlarmDate={nextAlarmDate}
+            remainingSeconds={remainingSeconds}
+          />
+        )}
 
         <Pressable
           style={[

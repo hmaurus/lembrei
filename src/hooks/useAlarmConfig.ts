@@ -48,6 +48,7 @@ export function useAlarmConfig() {
         ...prev,
         isActive: false,
         notificationId: undefined,
+        startTimestamp: undefined,
       }));
     } else {
       const granted = await requestPermissions();
@@ -62,6 +63,7 @@ export function useAlarmConfig() {
         ...prev,
         isActive: true,
         notificationId,
+        startTimestamp: Date.now(),
       }));
     }
   }, [config.isActive, config.hours, config.minutes, config.alertType]);
