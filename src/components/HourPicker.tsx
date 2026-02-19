@@ -1,6 +1,11 @@
+/**
+ * Seletor horizontal de horas (1–12) com scroll.
+ * Chips escuros com destaque âmbar no item selecionado.
+ */
 import { ScrollView, Pressable, Text, StyleSheet, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { HOUR_OPTIONS } from '../constants/alarm';
+import { colors, radii } from '../constants/theme';
 
 interface HourPickerProps {
   selected: number;
@@ -8,6 +13,12 @@ interface HourPickerProps {
   disabled: boolean;
 }
 
+/**
+ * Renderiza uma lista horizontal scrollável de opções de hora.
+ * @param selected - Hora atualmente selecionada
+ * @param onSelect - Callback ao selecionar uma hora
+ * @param disabled - Desabilita interação quando alarme está ativo
+ */
 export function HourPicker({ selected, onSelect, disabled }: HourPickerProps) {
   const handleSelect = (hour: number) => {
     if (disabled) return;
@@ -17,7 +28,7 @@ export function HourPicker({ selected, onSelect, disabled }: HourPickerProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Horas</Text>
+      <Text style={styles.label}>HORAS</Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -55,9 +66,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   label: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: '600',
-    color: '#333',
+    letterSpacing: 1.5,
+    color: colors.textSecondary,
     marginLeft: 4,
   },
   scrollContent: {
@@ -67,27 +79,27 @@ const styles = StyleSheet.create({
   option: {
     width: 48,
     height: 48,
-    borderRadius: 12,
+    borderRadius: radii.chip,
     borderCurve: 'continuous',
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.surfaceElevated,
     alignItems: 'center',
     justifyContent: 'center',
   },
   optionSelected: {
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.accent,
   },
   optionDisabled: {
-    opacity: 0.5,
+    opacity: 0.4,
   },
   optionText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: colors.textPrimary,
   },
   optionTextSelected: {
-    color: '#FFFFFF',
+    color: colors.background,
   },
   optionTextDisabled: {
-    color: '#999',
+    color: colors.disabledText,
   },
 });

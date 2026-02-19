@@ -1,3 +1,7 @@
+/**
+ * Tela principal do Lembrei! — configuração e ativação do alarme recorrente.
+ * Tema "Amber Glow": fundo escuro com acentos em âmbar.
+ */
 import {
   View,
   Text,
@@ -10,11 +14,18 @@ import * as Haptics from 'expo-haptics';
 import { useAlarmConfig } from '../src/hooks/useAlarmConfig';
 import { useCountdown } from '../src/hooks/useCountdown';
 import { calculateIntervalSeconds } from '../src/constants/alarm';
+import { colors, spacing, radii } from '../src/constants/theme';
 import { HourPicker } from '../src/components/HourPicker';
 import { MinutePicker } from '../src/components/MinutePicker';
 import { AlertTypeSelector } from '../src/components/AlertTypeSelector';
 import { ActiveAlarmInfo } from '../src/components/ActiveAlarmInfo';
 
+/**
+ * Formata o intervalo selecionado para exibição no subtítulo.
+ * @param hours - Horas selecionadas
+ * @param minutes - Minutos selecionados
+ * @returns String como "A cada 1h 30min"
+ */
 function formatInterval(hours: number, minutes: number): string {
   const parts: string[] = [];
   if (hours > 0) parts.push(`${hours}h`);
@@ -41,7 +52,7 @@ export default function HomeScreen() {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <ActivityIndicator size="large" color={colors.accent} />
       </View>
     );
   }
@@ -100,7 +111,12 @@ export default function HomeScreen() {
             ]}
             onPress={handleToggle}
           >
-            <Text style={styles.toggleButtonText}>
+            <Text
+              style={[
+                styles.toggleButtonText,
+                !config.isActive && styles.toggleButtonTextInactive,
+              ]}
+            >
               {config.isActive ? 'Desativar' : 'Ativar'}
             </Text>
           </Pressable>
@@ -115,37 +131,46 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
   },
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
   },
   container: {
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 20,
-    paddingBottom: 32,
+    paddingBottom: spacing.xl,
   },
   header: {
-    gap: 4,
-    marginBottom: 32,
+    gap: spacing.xs,
+    marginBottom: spacing.xl,
   },
   title: {
-    fontSize: 34,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#000',
+    color: colors.textPrimary,
   },
   subtitle: {
     fontSize: 17,
-    color: '#666',
+    fontWeight: '500',
+    color: colors.accent,
   },
   pickers: {
-    gap: 24,
+    gap: spacing.lg,
   },
   bottomSection: {
     marginTop: 'auto',
-    gap: 16,
+    gap: spacing.md,
+  },
+  bottomSectionActive: {
+    backgroundColor: colors.accentMuted,
+    borderRadius: radii.card,
+    borderCurve: 'continuous',
+    borderWidth: 1,
+    borderColor: colors.accentBorder,
+    padding: 20,
   },
   statusRow: {
     flexDirection: 'row',
@@ -157,37 +182,32 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#C7C7CC',
+    backgroundColor: colors.textTertiary,
   },
   statusTextInactive: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#C7C7CC',
-  },
-  bottomSectionActive: {
-    backgroundColor: '#F0FAF0',
-    borderRadius: 20,
-    borderCurve: 'continuous',
-    borderWidth: 1,
-    borderColor: '#34C75940',
-    padding: 20,
+    color: colors.textTertiary,
   },
   toggleButton: {
     height: 56,
-    borderRadius: 16,
+    borderRadius: radii.button,
     borderCurve: 'continuous',
     alignItems: 'center',
     justifyContent: 'center',
   },
   toggleButtonInactive: {
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.accent,
   },
   toggleButtonActive: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: colors.destructive,
   },
   toggleButtonText: {
     fontSize: 18,
     fontWeight: '700',
     color: '#FFFFFF',
+  },
+  toggleButtonTextInactive: {
+    color: colors.background,
   },
 });

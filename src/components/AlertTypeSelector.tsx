@@ -1,6 +1,11 @@
+/**
+ * Seletor de tipo de alerta (silencioso, vibração, som).
+ * Chips escuros com destaque âmbar e emojis indicativos.
+ */
 import { Pressable, Text, StyleSheet, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { AlertType } from '../types/alarm';
+import { colors, radii } from '../constants/theme';
 
 interface AlertTypeSelectorProps {
   selected: AlertType;
@@ -9,11 +14,17 @@ interface AlertTypeSelectorProps {
 }
 
 const ALERT_OPTIONS: { type: AlertType; label: string }[] = [
-  { type: 'silencioso', label: 'Silencioso' },
-  { type: 'vibração', label: 'Vibração' },
-  { type: 'som', label: 'Som' },
+  { type: 'silencioso', label: '\u{1F507} Silencioso' },
+  { type: 'vibração', label: '\u{1F4F3} Vibração' },
+  { type: 'som', label: '\u{1F50A} Som' },
 ];
 
+/**
+ * Renderiza três opções de tipo de alerta em layout horizontal.
+ * @param selected - Tipo de alerta atualmente selecionado
+ * @param onSelect - Callback ao selecionar um tipo
+ * @param disabled - Desabilita interação quando alarme está ativo
+ */
 export function AlertTypeSelector({
   selected,
   onSelect,
@@ -27,7 +38,7 @@ export function AlertTypeSelector({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Tipo de alerta</Text>
+      <Text style={styles.label}>TIPO DE ALERTA</Text>
       <View style={styles.options}>
         {ALERT_OPTIONS.map(({ type, label }) => (
           <Pressable
@@ -61,9 +72,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   label: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: '600',
-    color: '#333',
+    letterSpacing: 1.5,
+    color: colors.textSecondary,
     marginLeft: 4,
   },
   options: {
@@ -74,27 +86,27 @@ const styles = StyleSheet.create({
   option: {
     flex: 1,
     height: 48,
-    borderRadius: 12,
+    borderRadius: radii.chip,
     borderCurve: 'continuous',
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.surfaceElevated,
     alignItems: 'center',
     justifyContent: 'center',
   },
   optionSelected: {
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.accent,
   },
   optionDisabled: {
-    opacity: 0.5,
+    opacity: 0.4,
   },
   optionText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.textPrimary,
   },
   optionTextSelected: {
-    color: '#FFFFFF',
+    color: colors.background,
   },
   optionTextDisabled: {
-    color: '#999',
+    color: colors.disabledText,
   },
 });

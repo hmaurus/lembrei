@@ -1,9 +1,10 @@
 /**
  * Painel informativo exibido quando o alarme está ativo.
- * Mostra indicador pulsante, hora de início, próximo alarme e countdown.
+ * Mostra indicador pulsante, hora de início, próximo alarme e countdown hero.
  */
 import { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
+import { colors, fonts } from '../constants/theme';
 
 interface ActiveAlarmInfoProps {
   startTimestamp: number;
@@ -11,10 +12,20 @@ interface ActiveAlarmInfoProps {
   remainingSeconds: number;
 }
 
+/**
+ * Formata um Date para string HH:MM no fuso local (pt-BR).
+ * @param date - Data a formatar
+ * @returns String no formato "HH:MM"
+ */
 function formatTime(date: Date): string {
   return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 }
 
+/**
+ * Converte total de segundos em string HH:MM:SS com zero-padding.
+ * @param totalSeconds - Segundos restantes
+ * @returns String no formato "HH:MM:SS"
+ */
 function formatCountdown(totalSeconds: number): string {
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -24,6 +35,12 @@ function formatCountdown(totalSeconds: number): string {
     .join(':');
 }
 
+/**
+ * Exibe status do alarme ativo com countdown em destaque.
+ * @param startTimestamp - Timestamp de quando o alarme foi ativado
+ * @param nextAlarmDate - Data/hora do próximo disparo
+ * @param remainingSeconds - Segundos restantes até o próximo disparo
+ */
 export function ActiveAlarmInfo({
   startTimestamp,
   nextAlarmDate,
@@ -83,27 +100,31 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#34C759',
+    backgroundColor: colors.active,
   },
   statusText: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#34C759',
+    color: colors.active,
   },
   startedAt: {
     fontSize: 14,
-    color: '#666',
+    color: colors.textSecondary,
   },
   nextAlarm: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.textSecondary,
   },
   countdown: {
-    fontSize: 40,
+    fontSize: 52,
     fontWeight: '700',
-    color: '#007AFF',
+    fontFamily: fonts.mono,
+    color: colors.accent,
     fontVariant: ['tabular-nums'],
-    marginTop: 4,
+    marginTop: 8,
+    textShadowColor: 'rgba(255, 159, 10, 0.4)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 20,
   },
 });

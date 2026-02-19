@@ -1,6 +1,11 @@
+/**
+ * Seletor de minutos (00 ou 30) lado a lado.
+ * Chips escuros com destaque âmbar no item selecionado.
+ */
 import { Pressable, Text, StyleSheet, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { MINUTE_OPTIONS } from '../constants/alarm';
+import { colors, radii } from '../constants/theme';
 
 interface MinutePickerProps {
   selected: number;
@@ -8,6 +13,12 @@ interface MinutePickerProps {
   disabled: boolean;
 }
 
+/**
+ * Renderiza duas opções de minutos (00, 30) em layout horizontal.
+ * @param selected - Minuto atualmente selecionado
+ * @param onSelect - Callback ao selecionar um minuto
+ * @param disabled - Desabilita interação quando alarme está ativo
+ */
 export function MinutePicker({ selected, onSelect, disabled }: MinutePickerProps) {
   const handleSelect = (minute: number) => {
     if (disabled) return;
@@ -17,7 +28,7 @@ export function MinutePicker({ selected, onSelect, disabled }: MinutePickerProps
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Minutos</Text>
+      <Text style={styles.label}>MINUTOS</Text>
       <View style={styles.options}>
         {MINUTE_OPTIONS.map((minute) => (
           <Pressable
@@ -51,9 +62,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   label: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: '600',
-    color: '#333',
+    letterSpacing: 1.5,
+    color: colors.textSecondary,
     marginLeft: 4,
   },
   options: {
@@ -64,27 +76,27 @@ const styles = StyleSheet.create({
   option: {
     flex: 1,
     height: 48,
-    borderRadius: 12,
+    borderRadius: radii.chip,
     borderCurve: 'continuous',
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.surfaceElevated,
     alignItems: 'center',
     justifyContent: 'center',
   },
   optionSelected: {
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.accent,
   },
   optionDisabled: {
-    opacity: 0.5,
+    opacity: 0.4,
   },
   optionText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: colors.textPrimary,
   },
   optionTextSelected: {
-    color: '#FFFFFF',
+    color: colors.background,
   },
   optionTextDisabled: {
-    color: '#999',
+    color: colors.disabledText,
   },
 });
