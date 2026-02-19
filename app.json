@@ -24,10 +24,9 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.lembre.app",
+      "versionCode": 1,
       "permissions": [
-        "RECEIVE_BOOT_COMPLETED",
-        "VIBRATE",
-        "SCHEDULE_EXACT_ALARM"
+        "VIBRATE"
       ]
     },
     "plugins": [
