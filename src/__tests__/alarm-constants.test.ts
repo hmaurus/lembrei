@@ -27,7 +27,7 @@ describe('DEFAULT_CONFIG', () => {
     expect(DEFAULT_CONFIG).toEqual({
       hours: 1,
       minutes: 0,
-      alertType: 'vibração',
+      alertType: 'padrão',
       isActive: false,
     });
   });

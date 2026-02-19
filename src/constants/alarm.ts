@@ -12,7 +12,7 @@ export const STORAGE_KEY = '@lembrei/alarm-config';
 export const DEFAULT_CONFIG: AlarmConfig = {
   hours: 1,
   minutes: 0,
-  alertType: 'vibração',
+  alertType: 'padrão',
   isActive: false,
 };
 

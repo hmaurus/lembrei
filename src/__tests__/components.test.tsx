@@ -145,31 +145,41 @@ describe('MinutePicker', () => {
 
 describe('AlertTypeSelector', () => {
   const defaultProps = {
-    selected: 'vibração' as const,
+    selected: 'padrão' as const,
     onSelect: jest.fn(),
     disabled: false,
   };
 
-  it('renderiza 3 opções de alerta', () => {
+  it('renderiza 4 opções de alerta (1 padrão + 3 específicas)', () => {
     const { getAllByRole } = render(<AlertTypeSelector {...defaultProps} />);
     const radios = getAllByRole('radio');
-    expect(radios).toHaveLength(3);
+    expect(radios).toHaveLength(4);
   });
 
   it('tem accessibility labels sem emoji', () => {
     const { getByLabelText } = render(<AlertTypeSelector {...defaultProps} />);
-    expect(getByLabelText('Silencioso')).toBeTruthy();
+    expect(getByLabelText('Padrão do celular')).toBeTruthy();
+    expect(getByLabelText('Visual, sem som nem vibração')).toBeTruthy();
     expect(getByLabelText('Vibração')).toBeTruthy();
     expect(getByLabelText('Som')).toBeTruthy();
   });
 
-  it('chama onSelect com o tipo correto', () => {
+  it('chama onSelect com o tipo correto (específico)', () => {
     const onSelect = jest.fn();
     const { getByLabelText } = render(
       <AlertTypeSelector {...defaultProps} onSelect={onSelect} />,
     );
     fireEvent.press(getByLabelText('Som'));
     expect(onSelect).toHaveBeenCalledWith('som');
+  });
+
+  it('chama onSelect com padrão', () => {
+    const onSelect = jest.fn();
+    const { getByLabelText } = render(
+      <AlertTypeSelector {...defaultProps} selected="som" onSelect={onSelect} />,
+    );
+    fireEvent.press(getByLabelText('Padrão do celular'));
+    expect(onSelect).toHaveBeenCalledWith('padrão');
   });
 
   it('não chama onSelect quando disabled', () => {
@@ -179,5 +189,10 @@ describe('AlertTypeSelector', () => {
     );
     fireEvent.press(getByLabelText('Som'));
     expect(onSelect).not.toHaveBeenCalled();
+  });
+
+  it('exibe label "ou escolha:"', () => {
+    const { getByText } = render(<AlertTypeSelector {...defaultProps} />);
+    expect(getByText('ou escolha:')).toBeTruthy();
   });
 });

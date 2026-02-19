@@ -44,12 +44,15 @@ export async function requestPermissions(): Promise<boolean> {
 async function setupAndroidChannel(alertType: AlertType): Promise<void> {
   if (!Notifications || Platform.OS !== 'android') return;
 
+  const useSound = alertType === 'som' || alertType === 'padrão';
+  const useVibration = alertType === 'vibração' || alertType === 'padrão';
+
   await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
     name: 'Alarmes Lembrei!',
     importance: Notifications.AndroidImportance.HIGH,
-    sound: alertType === 'som' ? 'alarm.wav' : undefined,
-    vibrationPattern: alertType === 'vibração' ? [0, 250, 250, 250] : undefined,
-    enableVibrate: alertType === 'vibração',
+    sound: useSound ? 'alarm.wav' : undefined,
+    vibrationPattern: useVibration ? [0, 250, 250, 250] : undefined,
+    enableVibrate: useVibration,
   });
 }
 
@@ -70,7 +73,7 @@ export async function scheduleRecurringNotification(
     content: {
       title: 'Lembrei!',
       body: formatIntervalText(hours, minutes),
-      sound: alertType === 'som' ? 'alarm.wav' : undefined,
+      sound: (alertType === 'som' || alertType === 'padrão') ? 'alarm.wav' : undefined,
     },
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
@@ -97,7 +100,7 @@ export async function sendTestNotification(alertType: AlertType): Promise<boolea
     content: {
       title: 'Lembrei! — Teste',
       body: `Teste do alerta: ${alertType}`,
-      sound: alertType === 'som' ? 'alarm.wav' : undefined,
+      sound: (alertType === 'som' || alertType === 'padrão') ? 'alarm.wav' : undefined,
     },
     trigger: null,
   });

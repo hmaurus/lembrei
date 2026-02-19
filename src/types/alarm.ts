@@ -1,4 +1,4 @@
-export type AlertType = 'silencioso' | 'vibração' | 'som';
+export type AlertType = 'padrão' | 'silencioso' | 'vibração' | 'som';
 
 export interface AlarmConfig {
   hours: number;

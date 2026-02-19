@@ -102,6 +102,20 @@ describe('loadAlarmConfig', () => {
     expect(result).toEqual(DEFAULT_CONFIG);
   });
 
+  it('carrega config com alertType padrão', async () => {
+    const saved: AlarmConfig = {
+      hours: 2,
+      minutes: 0,
+      alertType: 'padrão',
+      isActive: false,
+    };
+    mockGetItem.mockResolvedValue(JSON.stringify(saved));
+
+    const result = await loadAlarmConfig();
+
+    expect(result).toEqual(saved);
+  });
+
   it('retorna DEFAULT_CONFIG para minutes=15 (não mais válido)', async () => {
     mockGetItem.mockResolvedValue(
       JSON.stringify({ hours: 1, minutes: 15, alertType: 'vibração', isActive: false }),

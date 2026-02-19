@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AlarmConfig, AlertType } from '../types/alarm';
 import { STORAGE_KEY, DEFAULT_CONFIG, HOUR_OPTIONS, MINUTE_OPTIONS } from '../constants/alarm';
 
-const VALID_ALERT_TYPES: AlertType[] = ['silencioso', 'vibração', 'som'];
+const VALID_ALERT_TYPES: AlertType[] = ['padrão', 'silencioso', 'vibração', 'som'];
 
 /**
  * Salva a configuração do alarme no AsyncStorage.
