@@ -7,7 +7,7 @@ export const DEFAULT_VISIBLE_HOURS = [1, 2, 3] as const;
 
 export const MINUTE_OPTIONS = [0, 30] as const;
 
-export const STORAGE_KEY = '@lembrei/alarm-config';
+export const STORAGE_KEY = '@lembre/alarm-config';
 
 export const DEFAULT_CONFIG: AlarmConfig = {
   hours: 1,

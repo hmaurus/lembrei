@@ -14,7 +14,7 @@ if (!isExpoGo && !isWeb) {
   Notifications = require('expo-notifications');
 }
 
-const CHANNEL_ID = 'lembrei-alarms';
+const CHANNEL_ID = 'lembre-alarms';
 
 export function setupNotificationHandler(): void {
   if (!Notifications) return;
@@ -48,7 +48,7 @@ async function setupAndroidChannel(alertType: AlertType): Promise<void> {
   const useVibration = alertType === 'vibração' || alertType === 'padrão';
 
   await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
-    name: 'Alarmes Lembrei!',
+    name: 'Alarmes Lembre!',
     importance: Notifications.AndroidImportance.HIGH,
     sound: useSound ? 'alarm.wav' : undefined,
     vibrationPattern: useVibration ? [0, 250, 250, 250] : undefined,
@@ -71,7 +71,7 @@ export async function scheduleRecurringNotification(
 
   const id = await Notifications.scheduleNotificationAsync({
     content: {
-      title: 'Lembrei!',
+      title: 'Lembre!',
       body: formatIntervalText(hours, minutes),
       sound: (alertType === 'som' || alertType === 'padrão') ? 'alarm.wav' : undefined,
     },
@@ -98,7 +98,7 @@ export async function sendTestNotification(alertType: AlertType): Promise<boolea
 
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: 'Lembrei! — Teste',
+      title: 'Lembre! — Teste',
       body: `Teste do alerta: ${alertType}`,
       sound: (alertType === 'som' || alertType === 'padrão') ? 'alarm.wav' : undefined,
     },

@@ -1,5 +1,5 @@
 /**
- * Tela principal do Lembrei! — configuração e ativação do alarme recorrente.
+ * Tela principal do Lembre! — configuração e ativação do alarme recorrente.
  * Tema "Amber Glow": fundo escuro com acentos em âmbar.
  */
 import {
@@ -94,7 +94,7 @@ export default function HomeScreen() {
         <View style={styles.header} accessibilityRole="header">
           <View style={styles.titleRow}>
             <Image
-              source={require('../assets/logo-lembrei.png')}
+              source={require('../assets/logo-lembre.png')}
               style={styles.logo}
               accessible={false}
             />

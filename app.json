@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "Lembrei!",
-    "slug": "lembrei",
+    "name": "Lembre!",
+    "slug": "lembre",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
-    "scheme": "lembrei",
+    "scheme": "lembre",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.lembrei.app"
+      "bundleIdentifier": "com.lembre.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -23,7 +23,7 @@
         "backgroundColor": "#111111"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.lembrei.app",
+      "package": "com.lembre.app",
       "permissions": [
         "RECEIVE_BOOT_COMPLETED",
         "VIBRATE",

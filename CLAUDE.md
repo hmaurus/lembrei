@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Visão Geral
 
-- Lembrei! é um app de lembretes/alarmes recorrentes feito com Expo (SDK 54) e React Native. O usuário escolhe um intervalo (horas + minutos) e um tipo de alerta (silencioso, vibração, som), e então ativa/desativa o alarme. As notificações se repetem no intervalo escolhido.
+- Lembre! é um app de lembretes/alarmes recorrentes feito com Expo (SDK 54) e React Native. O usuário escolhe um intervalo (horas + minutos) e um tipo de alerta (silencioso, vibração, som), e então ativa/desativa o alarme. As notificações se repetem no intervalo escolhido.
 
 - O principal diferencial do app é a simplicidade e foco em um único propósito.
 

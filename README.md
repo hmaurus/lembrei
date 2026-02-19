@@ -1,4 +1,4 @@
-# Lembrei!
+# Lembre!
 
 App de lembretes recorrentes para Android e iOS. Escolha um intervalo de tempo, selecione o tipo de alerta e ative — você receberá notificações repetidas no intervalo definido.
 
