@@ -1,4 +1,9 @@
-import { View, Text, StyleSheet } from 'react-native';
+/**
+ * Painel informativo exibido quando o alarme está ativo.
+ * Mostra indicador pulsante, hora de início, próximo alarme e countdown.
+ */
+import { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 
 interface ActiveAlarmInfoProps {
   startTimestamp: number;
@@ -24,8 +29,34 @@ export function ActiveAlarmInfo({
   nextAlarmDate,
   remainingSeconds,
 }: ActiveAlarmInfoProps) {
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    const animation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 0.3,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    animation.start();
+    return () => animation.stop();
+  }, [pulseAnim]);
+
   return (
     <View style={styles.container}>
+      <View style={styles.statusRow}>
+        <Animated.View style={[styles.statusDot, { opacity: pulseAnim }]} />
+        <Text style={styles.statusText}>Alarme ativo</Text>
+      </View>
+
       <Text style={styles.startedAt}>
         Iniciado às {formatTime(new Date(startTimestamp))}
       </Text>
@@ -39,14 +70,25 @@ export function ActiveAlarmInfo({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#F2F2F7',
-    borderRadius: 16,
-    borderCurve: 'continuous',
-    paddingVertical: 20,
-    paddingHorizontal: 16,
     alignItems: 'center',
     gap: 4,
-    marginTop: 24,
+  },
+  statusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  statusDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#34C759',
+  },
+  statusText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#34C759',
   },
   startedAt: {
     fontSize: 14,

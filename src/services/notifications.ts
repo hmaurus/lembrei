@@ -4,12 +4,13 @@ import { Platform } from 'react-native';
 import { AlertType } from '../types/alarm';
 import { calculateIntervalSeconds } from '../constants/alarm';
 
-// expo-notifications was removed from Expo Go in SDK 53.
-// Detect Expo Go and skip loading entirely to avoid the error.
+// expo-notifications was removed from Expo Go in SDK 53 and is not available on web.
+// Detect unsupported environments and skip loading entirely to avoid errors.
 const isExpoGo = Constants.appOwnership === 'expo';
+const isWeb = Platform.OS === 'web';
 
 let Notifications: typeof import('expo-notifications') | null = null;
-if (!isExpoGo) {
+if (!isExpoGo && !isWeb) {
   Notifications = require('expo-notifications');
 }
 

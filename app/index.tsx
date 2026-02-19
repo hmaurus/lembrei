@@ -46,9 +46,7 @@ export default function HomeScreen() {
     );
   }
 
-  const subtitle = config.isActive
-    ? `Ativo - ${formatInterval(config.hours, config.minutes)}`
-    : formatInterval(config.hours, config.minutes);
+  const subtitle = formatInterval(config.hours, config.minutes);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -76,25 +74,37 @@ export default function HomeScreen() {
           />
         </View>
 
-        {config.isActive && nextAlarmDate && config.startTimestamp && (
-          <ActiveAlarmInfo
-            startTimestamp={config.startTimestamp}
-            nextAlarmDate={nextAlarmDate}
-            remainingSeconds={remainingSeconds}
-          />
-        )}
-
-        <Pressable
+        <View
           style={[
-            styles.toggleButton,
-            config.isActive ? styles.toggleButtonActive : styles.toggleButtonInactive,
+            styles.bottomSection,
+            config.isActive && styles.bottomSectionActive,
           ]}
-          onPress={handleToggle}
         >
-          <Text style={styles.toggleButtonText}>
-            {config.isActive ? 'Desativar' : 'Ativar'}
-          </Text>
-        </Pressable>
+          {config.isActive && nextAlarmDate && config.startTimestamp ? (
+            <ActiveAlarmInfo
+              startTimestamp={config.startTimestamp}
+              nextAlarmDate={nextAlarmDate}
+              remainingSeconds={remainingSeconds}
+            />
+          ) : (
+            <View style={styles.statusRow}>
+              <View style={styles.statusDotInactive} />
+              <Text style={styles.statusTextInactive}>Alarme desativado</Text>
+            </View>
+          )}
+
+          <Pressable
+            style={[
+              styles.toggleButton,
+              config.isActive ? styles.toggleButtonActive : styles.toggleButtonInactive,
+            ]}
+            onPress={handleToggle}
+          >
+            <Text style={styles.toggleButtonText}>
+              {config.isActive ? 'Desativar' : 'Ativar'}
+            </Text>
+          </Pressable>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -133,8 +143,36 @@ const styles = StyleSheet.create({
   pickers: {
     gap: 24,
   },
-  toggleButton: {
+  bottomSection: {
     marginTop: 'auto',
+    gap: 16,
+  },
+  statusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  statusDotInactive: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#C7C7CC',
+  },
+  statusTextInactive: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#C7C7CC',
+  },
+  bottomSectionActive: {
+    backgroundColor: '#F0FAF0',
+    borderRadius: 20,
+    borderCurve: 'continuous',
+    borderWidth: 1,
+    borderColor: '#34C75940',
+    padding: 20,
+  },
+  toggleButton: {
     height: 56,
     borderRadius: 16,
     borderCurve: 'continuous',
