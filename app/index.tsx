@@ -8,12 +8,14 @@ import {
   Pressable,
   StyleSheet,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useAlarmConfig } from '../src/hooks/useAlarmConfig';
 import { useCountdown } from '../src/hooks/useCountdown';
 import { calculateIntervalSeconds } from '../src/constants/alarm';
+import { sendTestNotification, requestPermissions } from '../src/services/notifications';
 import { colors, spacing, radii } from '../src/constants/theme';
 import { HourPicker } from '../src/components/HourPicker';
 import { MinutePicker } from '../src/components/MinutePicker';
@@ -47,6 +49,19 @@ export default function HomeScreen() {
   const handleToggle = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     await toggleAlarm();
+  };
+
+  const handleTestAlert = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const granted = await requestPermissions();
+    if (!granted) {
+      Alert.alert('Permissão negada', 'Habilite as notificações nas configurações do dispositivo.');
+      return;
+    }
+    const sent = await sendTestNotification(config.alertType);
+    if (!sent) {
+      Alert.alert('Indisponível', 'Notificações não funcionam no Expo Go ou na web. Use um dev build para testar.');
+    }
   };
 
   if (isLoading) {
@@ -83,6 +98,24 @@ export default function HomeScreen() {
             onSelect={setAlertType}
             disabled={config.isActive}
           />
+
+          <Pressable
+            style={[
+              styles.testButton,
+              config.isActive && styles.testButtonDisabled,
+            ]}
+            onPress={handleTestAlert}
+            disabled={config.isActive}
+          >
+            <Text
+              style={[
+                styles.testButtonText,
+                config.isActive && styles.testButtonTextDisabled,
+              ]}
+            >
+              Testar alerta
+            </Text>
+          </Pressable>
         </View>
 
         <View
@@ -159,6 +192,29 @@ const styles = StyleSheet.create({
   },
   pickers: {
     gap: spacing.lg,
+  },
+  testButton: {
+    height: 44,
+    borderRadius: radii.chip,
+    borderCurve: 'continuous',
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: colors.accentBorder,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    paddingHorizontal: spacing.lg,
+  },
+  testButtonDisabled: {
+    opacity: 0.4,
+  },
+  testButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.accent,
+  },
+  testButtonTextDisabled: {
+    color: colors.disabledText,
   },
   bottomSection: {
     marginTop: 'auto',

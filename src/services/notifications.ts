@@ -83,6 +83,28 @@ export async function scheduleRecurringNotification(
   return id;
 }
 
+/**
+ * Dispara uma notificação imediata para testar o tipo de alerta selecionado.
+ * @param alertType - Tipo de alerta a ser testado ('silencioso' | 'vibração' | 'som')
+ * @returns true se a notificação foi enviada, false se não disponível (Expo Go/web)
+ */
+export async function sendTestNotification(alertType: AlertType): Promise<boolean> {
+  if (!Notifications) return false;
+
+  await setupAndroidChannel(alertType);
+
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: 'Lembrei! — Teste',
+      body: `Teste do alerta: ${alertType}`,
+      sound: alertType === 'som' ? 'alarm.wav' : undefined,
+    },
+    trigger: null,
+  });
+
+  return true;
+}
+
 export async function cancelAllNotifications(): Promise<void> {
   if (!Notifications) return;
   await Notifications.cancelAllScheduledNotificationsAsync();
