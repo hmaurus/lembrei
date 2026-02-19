@@ -2,9 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Regra de Idioma
+## Idioma
 
-Código (variáveis, funções, tipos, comentários) em inglês; comunicação com o usuário e documentação em pt-BR.
+- Código em inglês (vars, funcs, classes, entidades); Comunicação com o usuário e documentação em pt-BR (commits, gitgub issues, mensagens de erro, comentários etc)
 
 ## Visão Geral
 
