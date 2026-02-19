@@ -18,9 +18,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npx expo start            # Inicia o dev server (Expo Go ou dev client)
 npx expo start --android  # Inicia no Android
 npx expo start --ios      # Inicia no iOS
+npx jest                  # Roda toda a suíte de testes
+npx tsc --noEmit          # Verificação de tipos
 ```
 
-Nenhum framework de testes, linter ou formatter está configurado no momento.
+## Testes
+
+- **Framework:** Jest + jest-expo (preset) + @testing-library/react-native
+- **Estrutura:** Testes em `src/__tests__/` com sufixo `.test.ts` ou `.test.tsx`
+- **Mocks globais:** `jest.setup.js` (expo-haptics, expo-constants, expo-device, AsyncStorage)
+- **Padrão:** Toda lógica nova (constantes, services, hooks) deve ter testes unitários. Componentes devem testar renderização, interação e acessibilidade.
+- **Rodar antes de commitar:** `npx jest && npx tsc --noEmit`
+
+Nenhum linter ou formatter está configurado no momento.
 
 ## Arquitetura
 
@@ -31,9 +41,9 @@ Nenhum framework de testes, linter ou formatter está configurado no momento.
 - `constants/alarm.ts` — opções dos pickers, chave do storage, config padrão, `calculateIntervalSeconds()`
 - `services/storage.ts` — persistência via AsyncStorage (salva/carrega `AlarmConfig`)
 - `services/notifications.ts` — agendamento de expo-notifications, permissões, setup do canal Android
-- `hooks/useAlarmConfig.ts` — hook central de estado: carrega config persistida, salva automaticamente ao mudar, gerencia toggle (agenda/cancela notificações)
+- `hooks/useAlarmConfig.ts` — hook central de estado: carrega config persistida (com validação), salva automaticamente, gerencia toggle com LayoutAnimation e proteção contra duplo-toque, verifica notificações agendadas ao restaurar
 - `hooks/useCountdown.ts` — calcula próximo alarme e countdown com `setInterval` de 1s; recebe `startTimestamp` e `intervalSeconds`
-- `components/` — `HourPicker`, `MinutePicker`, `AlertTypeSelector` (pickers horizontais com haptics), `ActiveAlarmInfo` (exibe hora de início, próximo alarme e countdown)
+- `components/` — `HourPicker` (grid 2×6 com haptics), `MinutePicker` (00/15/30/45), `AlertTypeSelector` (silencioso/vibração/som), `ActiveAlarmInfo` (countdown com animação de entrada e suporte a reduceMotion)
 
 **Fluxo de dados:** `useAlarmConfig` carrega do AsyncStorage na montagem → estado alimenta a UI → mudanças do usuário são auto-persistidas → toggle agenda/cancela expo-notifications. Ao ativar, `startTimestamp` é gravado e `useCountdown` calcula o countdown em tempo real.
 
@@ -45,3 +55,7 @@ Nenhum framework de testes, linter ou formatter está configurado no momento.
 - **Canal de notificação Android:** recriado a cada ativação do alarme com configurações correspondentes ao tipo de alerta selecionado.
 - **Som de alarme customizado:** `assets/alarm.wav` é empacotado via plugin `expo-notifications` no `app.json`.
 - **New Architecture habilitada:** `newArchEnabled: true` no `app.json`. Considerar compatibilidade ao adicionar bibliotecas nativas.
+- **Acessibilidade:** Todos os elementos interativos têm `accessibilityRole`, `accessibilityLabel` e `accessibilityState`. Pickers usam `radiogroup`/`radio`. Textos críticos têm `maxFontSizeMultiplier`.
+- **Validação de dados persistidos:** `loadAlarmConfig` valida contra `HOUR_OPTIONS`, `MINUTE_OPTIONS` e tipos válidos, retornando `DEFAULT_CONFIG` se corrompido.
+- **LayoutAnimation:** Transições de estado (ativar/desativar alarme) são animadas via `LayoutAnimation.configureNext`. Android requer `UIManager.setLayoutAnimationEnabledExperimental(true)`.
+- **Design tokens centralizados:** `src/constants/theme.ts` exporta `colors`, `fonts`, `spacing`, `radii`. Usar `colors.textOnAccent` para texto sobre fundo accent (contraste AA).

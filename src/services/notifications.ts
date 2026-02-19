@@ -110,6 +110,16 @@ export async function cancelAllNotifications(): Promise<void> {
   await Notifications.cancelAllScheduledNotificationsAsync();
 }
 
+/**
+ * Verifica se há notificações agendadas (para detectar se o OS cancelou).
+ * @returns true se existe ao menos uma notificação agendada
+ */
+export async function hasScheduledNotifications(): Promise<boolean> {
+  if (!Notifications) return true; // Stub no Expo Go
+  const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+  return scheduled.length > 0;
+}
+
 function formatIntervalText(hours: number, minutes: number): string {
   const parts: string[] = [];
   if (hours > 0) parts.push(`${hours}h`);

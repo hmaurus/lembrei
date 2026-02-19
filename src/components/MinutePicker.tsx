@@ -1,5 +1,5 @@
 /**
- * Seletor de minutos (00 ou 30) lado a lado.
+ * Seletor de minutos (00, 15, 30, 45) lado a lado.
  * Chips escuros com destaque âmbar no item selecionado.
  */
 import { Pressable, Text, StyleSheet, View } from 'react-native';
@@ -14,7 +14,7 @@ interface MinutePickerProps {
 }
 
 /**
- * Renderiza duas opções de minutos (00, 30) em layout horizontal.
+ * Renderiza opções de minutos em layout horizontal.
  * @param selected - Minuto atualmente selecionado
  * @param onSelect - Callback ao selecionar um minuto
  * @param disabled - Desabilita interação quando alarme está ativo
@@ -27,31 +27,41 @@ export function MinutePicker({ selected, onSelect, disabled }: MinutePickerProps
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>MINUTOS</Text>
+    <View
+      style={styles.container}
+      accessibilityRole="radiogroup"
+      accessibilityLabel="Minutos"
+    >
       <View style={styles.options}>
-        {MINUTE_OPTIONS.map((minute) => (
-          <Pressable
-            key={minute}
-            style={[
-              styles.option,
-              minute === selected && styles.optionSelected,
-              disabled && styles.optionDisabled,
-            ]}
-            onPress={() => handleSelect(minute)}
-            disabled={disabled}
-          >
-            <Text
+        {MINUTE_OPTIONS.map((minute) => {
+          const isSelected = minute === selected;
+          return (
+            <Pressable
+              key={minute}
               style={[
-                styles.optionText,
-                minute === selected && styles.optionTextSelected,
-                disabled && styles.optionTextDisabled,
+                styles.option,
+                isSelected && styles.optionSelected,
+                disabled && styles.optionDisabled,
               ]}
+              onPress={() => handleSelect(minute)}
+              disabled={disabled}
+              accessibilityRole="radio"
+              accessibilityLabel={`${minute} minutos`}
+              accessibilityState={{ selected: isSelected, disabled }}
             >
-              {minute.toString().padStart(2, '0')}
-            </Text>
-          </Pressable>
-        ))}
+              <Text
+                style={[
+                  styles.optionText,
+                  isSelected && styles.optionTextSelected,
+                  disabled && styles.optionTextDisabled,
+                ]}
+                maxFontSizeMultiplier={1.2}
+              >
+                {minute.toString().padStart(2, '0')}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
     </View>
   );
@@ -60,13 +70,6 @@ export function MinutePicker({ selected, onSelect, disabled }: MinutePickerProps
 const styles = StyleSheet.create({
   container: {
     gap: 8,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 1.5,
-    color: colors.textSecondary,
-    marginLeft: 4,
   },
   options: {
     flexDirection: 'row',
@@ -94,7 +97,7 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   optionTextSelected: {
-    color: colors.background,
+    color: colors.textOnAccent,
   },
   optionTextDisabled: {
     color: colors.disabledText,

@@ -48,7 +48,13 @@ export default function HomeScreen() {
 
   const handleToggle = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    await toggleAlarm();
+    const result = await toggleAlarm();
+    if (result === 'permission_denied') {
+      Alert.alert(
+        'Permissão negada',
+        'Habilite as notificações nas configurações do dispositivo.',
+      );
+    }
   };
 
   const handleTestAlert = async () => {
@@ -73,26 +79,42 @@ export default function HomeScreen() {
   }
 
   const subtitle = formatInterval(config.hours, config.minutes);
+  const toggleLabel = config.isActive ? 'Desativar alarme' : 'Ativar alarme';
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Lembrei!</Text>
-          <Text style={styles.subtitle}>{subtitle}</Text>
+        <View style={styles.header} accessibilityRole="header">
+          <Text style={styles.title} maxFontSizeMultiplier={1.3}>
+            Lembrei!
+          </Text>
+          <Text
+            style={styles.subtitle}
+            maxFontSizeMultiplier={1.3}
+            accessibilityLabel={`Intervalo: ${subtitle}`}
+          >
+            {subtitle}
+          </Text>
         </View>
 
         <View style={styles.pickers}>
-          <HourPicker
-            selected={config.hours}
-            onSelect={setHours}
-            disabled={config.isActive}
-          />
-          <MinutePicker
-            selected={config.minutes}
-            onSelect={setMinutes}
-            disabled={config.isActive}
-          />
+          {/* Grupo INTERVALO: horas + minutos */}
+          <View style={styles.intervalGroup}>
+            <Text style={styles.sectionLabel} maxFontSizeMultiplier={1.3}>
+              INTERVALO
+            </Text>
+            <HourPicker
+              selected={config.hours}
+              onSelect={setHours}
+              disabled={config.isActive}
+            />
+            <MinutePicker
+              selected={config.minutes}
+              onSelect={setMinutes}
+              disabled={config.isActive}
+            />
+          </View>
+
           <AlertTypeSelector
             selected={config.alertType}
             onSelect={setAlertType}
@@ -106,12 +128,17 @@ export default function HomeScreen() {
             ]}
             onPress={handleTestAlert}
             disabled={config.isActive}
+            accessibilityRole="button"
+            accessibilityLabel="Testar alerta"
+            accessibilityHint="Envia uma notificação de teste com o tipo de alerta selecionado"
+            accessibilityState={{ disabled: config.isActive }}
           >
             <Text
               style={[
                 styles.testButtonText,
                 config.isActive && styles.testButtonTextDisabled,
               ]}
+              maxFontSizeMultiplier={1.3}
             >
               Testar alerta
             </Text>
@@ -131,9 +158,14 @@ export default function HomeScreen() {
               remainingSeconds={remainingSeconds}
             />
           ) : (
-            <View style={styles.statusRow}>
+            <View
+              style={styles.statusRow}
+              accessibilityLabel="Alarme desativado"
+            >
               <View style={styles.statusDotInactive} />
-              <Text style={styles.statusTextInactive}>Alarme desativado</Text>
+              <Text style={styles.statusTextInactive} maxFontSizeMultiplier={1.3}>
+                Alarme desativado
+              </Text>
             </View>
           )}
 
@@ -143,12 +175,15 @@ export default function HomeScreen() {
               config.isActive ? styles.toggleButtonActive : styles.toggleButtonInactive,
             ]}
             onPress={handleToggle}
+            accessibilityRole="button"
+            accessibilityLabel={toggleLabel}
           >
             <Text
               style={[
                 styles.toggleButtonText,
                 !config.isActive && styles.toggleButtonTextInactive,
               ]}
+              maxFontSizeMultiplier={1.2}
             >
               {config.isActive ? 'Desativar' : 'Ativar'}
             </Text>
@@ -192,6 +227,16 @@ const styles = StyleSheet.create({
   },
   pickers: {
     gap: spacing.lg,
+  },
+  intervalGroup: {
+    gap: spacing.md,
+  },
+  sectionLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    letterSpacing: 1.5,
+    color: colors.textSecondary,
+    marginLeft: 4,
   },
   testButton: {
     height: 44,
@@ -264,6 +309,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   toggleButtonTextInactive: {
-    color: colors.background,
+    color: colors.textOnAccent,
   },
 });

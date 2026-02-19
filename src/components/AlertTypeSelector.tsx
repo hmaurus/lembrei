@@ -13,10 +13,10 @@ interface AlertTypeSelectorProps {
   disabled: boolean;
 }
 
-const ALERT_OPTIONS: { type: AlertType; label: string }[] = [
-  { type: 'silencioso', label: '\u{1F507} Silencioso' },
-  { type: 'vibração', label: '\u{1F4F3} Vibração' },
-  { type: 'som', label: '\u{1F50A} Som' },
+const ALERT_OPTIONS: { type: AlertType; label: string; a11yLabel: string }[] = [
+  { type: 'silencioso', label: '\u{1F507} Silencioso', a11yLabel: 'Silencioso' },
+  { type: 'vibração', label: '\u{1F4F3} Vibração', a11yLabel: 'Vibração' },
+  { type: 'som', label: '\u{1F50A} Som', a11yLabel: 'Som' },
 ];
 
 /**
@@ -38,30 +38,41 @@ export function AlertTypeSelector({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>TIPO DE ALERTA</Text>
-      <View style={styles.options}>
-        {ALERT_OPTIONS.map(({ type, label }) => (
-          <Pressable
-            key={type}
-            style={[
-              styles.option,
-              type === selected && styles.optionSelected,
-              disabled && styles.optionDisabled,
-            ]}
-            onPress={() => handleSelect(type)}
-            disabled={disabled}
-          >
-            <Text
+      <Text style={styles.label} maxFontSizeMultiplier={1.3}>TIPO DE ALERTA</Text>
+      <View
+        style={styles.options}
+        accessibilityRole="radiogroup"
+        accessibilityLabel="Tipo de alerta"
+      >
+        {ALERT_OPTIONS.map(({ type, label, a11yLabel }) => {
+          const isSelected = type === selected;
+          return (
+            <Pressable
+              key={type}
               style={[
-                styles.optionText,
-                type === selected && styles.optionTextSelected,
-                disabled && styles.optionTextDisabled,
+                styles.option,
+                isSelected && styles.optionSelected,
+                disabled && styles.optionDisabled,
               ]}
+              onPress={() => handleSelect(type)}
+              disabled={disabled}
+              accessibilityRole="radio"
+              accessibilityLabel={a11yLabel}
+              accessibilityState={{ selected: isSelected, disabled }}
             >
-              {label}
-            </Text>
-          </Pressable>
-        ))}
+              <Text
+                style={[
+                  styles.optionText,
+                  isSelected && styles.optionTextSelected,
+                  disabled && styles.optionTextDisabled,
+                ]}
+                maxFontSizeMultiplier={1.2}
+              >
+                {label}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
     </View>
   );
@@ -104,7 +115,7 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   optionTextSelected: {
-    color: colors.background,
+    color: colors.textOnAccent,
   },
   optionTextDisabled: {
     color: colors.disabledText,

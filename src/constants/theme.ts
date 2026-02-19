@@ -9,13 +9,15 @@ export const colors = {
   surfaceElevated: '#2C2C2E',
   accent: '#FF9F0A',
   accentMuted: 'rgba(255, 159, 10, 0.15)',
-  accentBorder: 'rgba(255, 159, 10, 0.25)',
+  accentBorder: 'rgba(255, 159, 10, 0.5)',
   textPrimary: '#F5F5F7',
-  textSecondary: '#8E8E93',
+  textSecondary: '#A1A1A6',
   textTertiary: '#636366',
   destructive: '#FF453A',
   active: '#30D158',
   disabledText: '#48484A',
+  /** Texto sobre fundo accent — preto puro para contraste AA (4.1:1). */
+  textOnAccent: '#000000',
 } as const;
 
 export const fonts = {

@@ -3,7 +3,7 @@
  * Mostra indicador pulsante, hora de início, próximo alarme e countdown hero.
  */
 import { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated, AccessibilityInfo, Platform } from 'react-native';
 import { colors, fonts } from '../constants/theme';
 
 interface ActiveAlarmInfoProps {
@@ -36,6 +36,21 @@ function formatCountdown(totalSeconds: number): string {
 }
 
 /**
+ * Formata countdown para leitura por screen reader (ex: "2 horas, 15 minutos e 30 segundos").
+ * @param totalSeconds - Segundos restantes
+ * @returns String descritiva para acessibilidade
+ */
+function formatCountdownA11y(totalSeconds: number): string {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const parts: string[] = [];
+  if (hours > 0) parts.push(`${hours} hora${hours > 1 ? 's' : ''}`);
+  if (minutes > 0) parts.push(`${minutes} minuto${minutes > 1 ? 's' : ''}`);
+  if (parts.length === 0) parts.push('menos de 1 minuto');
+  return parts.join(' e ');
+}
+
+/**
  * Exibe status do alarme ativo com countdown em destaque.
  * @param startTimestamp - Timestamp de quando o alarme foi ativado
  * @param nextAlarmDate - Data/hora do próximo disparo
@@ -47,41 +62,84 @@ export function ActiveAlarmInfo({
   remainingSeconds,
 }: ActiveAlarmInfoProps) {
   const pulseAnim = useRef(new Animated.Value(1)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const animation = Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 0.3,
-          duration: 1000,
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 1000,
-          useNativeDriver: true,
-        }),
-      ]),
-    );
-    animation.start();
-    return () => animation.stop();
+    // Animação de entrada (fade-in)
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 400,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    // Respeita a preferência reduceMotion do sistema
+    const checkMotion = async () => {
+      const reduceMotion = await AccessibilityInfo.isReduceMotionEnabled();
+      if (cancelled || reduceMotion) return;
+
+      const animation = Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 0.3,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ]),
+      );
+      animation.start();
+
+      return () => animation.stop();
+    };
+
+    let stopAnimation: (() => void) | undefined;
+    checkMotion().then((stop) => {
+      stopAnimation = stop;
+    });
+
+    return () => {
+      cancelled = true;
+      stopAnimation?.();
+    };
   }, [pulseAnim]);
 
   return (
-    <View style={styles.container}>
+    <Animated.View
+      style={[styles.container, { opacity: fadeAnim }]}
+      accessibilityRole="summary"
+      accessibilityLabel={`Alarme ativo. Próximo alarme em ${formatCountdownA11y(remainingSeconds)}`}
+    >
       <View style={styles.statusRow}>
         <Animated.View style={[styles.statusDot, { opacity: pulseAnim }]} />
-        <Text style={styles.statusText}>Alarme ativo</Text>
+        <Text style={styles.statusText} maxFontSizeMultiplier={1.3}>
+          Alarme ativo
+        </Text>
       </View>
 
-      <Text style={styles.startedAt}>
+      <Text style={styles.startedAt} maxFontSizeMultiplier={1.3}>
         Iniciado às {formatTime(new Date(startTimestamp))}
       </Text>
-      <Text style={styles.nextAlarm}>
+      <Text style={styles.nextAlarm} maxFontSizeMultiplier={1.3}>
         Próximo alarme: {formatTime(nextAlarmDate)}
       </Text>
-      <Text style={styles.countdown}>{formatCountdown(remainingSeconds)}</Text>
-    </View>
+      <Text
+        style={styles.countdown}
+        maxFontSizeMultiplier={1.1}
+        accessibilityRole="timer"
+        accessibilityLabel={`Faltam ${formatCountdownA11y(remainingSeconds)}`}
+        {...(Platform.OS === 'android' ? { accessibilityLiveRegion: 'polite' as const } : {})}
+      >
+        {formatCountdown(remainingSeconds)}
+      </Text>
+    </Animated.View>
   );
 }
 
