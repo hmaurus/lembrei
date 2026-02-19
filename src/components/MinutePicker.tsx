@@ -5,7 +5,7 @@
 import { Pressable, Text, StyleSheet, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { MINUTE_OPTIONS } from '../constants/alarm';
-import { colors, radii } from '../constants/theme';
+import { colors, radii, spacing } from '../constants/theme';
 
 interface MinutePickerProps {
   selected: number;
@@ -32,6 +32,9 @@ export function MinutePicker({ selected, onSelect, disabled }: MinutePickerProps
       accessibilityRole="radiogroup"
       accessibilityLabel="Minutos"
     >
+      <Text style={styles.label} maxFontSizeMultiplier={1.3}>
+        MINUTOS
+      </Text>
       <View style={styles.options}>
         {MINUTE_OPTIONS.map((minute) => {
           const isSelected = minute === selected;
@@ -69,7 +72,14 @@ export function MinutePicker({ selected, onSelect, disabled }: MinutePickerProps
 
 const styles = StyleSheet.create({
   container: {
-    gap: 8,
+    gap: spacing.sm,
+  },
+  label: {
+    fontSize: 13,
+    fontWeight: '600',
+    letterSpacing: 1.5,
+    color: colors.textSecondary,
+    marginLeft: 4,
   },
   options: {
     flexDirection: 'row',
@@ -77,7 +87,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   option: {
-    flex: 1,
+    width: 48,
     height: 48,
     borderRadius: radii.chip,
     borderCurve: 'continuous',

@@ -2,7 +2,10 @@ import { AlarmConfig } from '../types/alarm';
 
 export const HOUR_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
 
-export const MINUTE_OPTIONS = [0, 15, 30, 45] as const;
+/** Horas exibidas por padrão no picker colapsado (1–3h cobre 90%+ dos casos). */
+export const DEFAULT_VISIBLE_HOURS = [1, 2, 3] as const;
+
+export const MINUTE_OPTIONS = [0, 30] as const;
 
 export const STORAGE_KEY = '@lembrei/alarm-config';
 

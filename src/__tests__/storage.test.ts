@@ -43,7 +43,7 @@ describe('loadAlarmConfig', () => {
   it('carrega config válida do storage', async () => {
     const saved: AlarmConfig = {
       hours: 3,
-      minutes: 15,
+      minutes: 30,
       alertType: 'som',
       isActive: false,
     };
@@ -102,29 +102,19 @@ describe('loadAlarmConfig', () => {
     expect(result).toEqual(DEFAULT_CONFIG);
   });
 
-  it('aceita minutes=15 como válido (novo valor)', async () => {
-    const saved: AlarmConfig = {
-      hours: 1,
-      minutes: 15,
-      alertType: 'vibração',
-      isActive: false,
-    };
-    mockGetItem.mockResolvedValue(JSON.stringify(saved));
+  it('retorna DEFAULT_CONFIG para minutes=15 (não mais válido)', async () => {
+    mockGetItem.mockResolvedValue(
+      JSON.stringify({ hours: 1, minutes: 15, alertType: 'vibração', isActive: false }),
+    );
 
-    const result = await loadAlarmConfig();
-
-    expect(result).toEqual(saved);
+    expect(await loadAlarmConfig()).toEqual(DEFAULT_CONFIG);
   });
 
-  it('aceita minutes=45 como válido (novo valor)', async () => {
-    const saved: AlarmConfig = {
-      hours: 2,
-      minutes: 45,
-      alertType: 'silencioso',
-      isActive: false,
-    };
-    mockGetItem.mockResolvedValue(JSON.stringify(saved));
+  it('retorna DEFAULT_CONFIG para minutes=45 (não mais válido)', async () => {
+    mockGetItem.mockResolvedValue(
+      JSON.stringify({ hours: 2, minutes: 45, alertType: 'silencioso', isActive: false }),
+    );
 
-    expect(await loadAlarmConfig()).toEqual(saved);
+    expect(await loadAlarmConfig()).toEqual(DEFAULT_CONFIG);
   });
 });

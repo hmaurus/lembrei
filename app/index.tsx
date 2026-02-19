@@ -9,6 +9,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
+  Image,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -32,7 +34,7 @@ function formatInterval(hours: number, minutes: number): string {
   const parts: string[] = [];
   if (hours > 0) parts.push(`${hours}h`);
   if (minutes > 0) parts.push(`${minutes}min`);
-  return `A cada ${parts.join(' ')}`;
+  return `a cada ${parts.join(' ')}`;
 }
 
 export default function HomeScreen() {
@@ -83,26 +85,37 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
       <View style={styles.container}>
         <View style={styles.header} accessibilityRole="header">
-          <Text style={styles.title} maxFontSizeMultiplier={1.3}>
-            Lembrei!
-          </Text>
-          <Text
-            style={styles.subtitle}
-            maxFontSizeMultiplier={1.3}
-            accessibilityLabel={`Intervalo: ${subtitle}`}
-          >
-            {subtitle}
-          </Text>
+          <View style={styles.titleRow}>
+            <Image
+              source={require('../assets/logo-lembrei.png')}
+              style={styles.logo}
+              accessible={false}
+            />
+            <Text style={styles.title} maxFontSizeMultiplier={1.3}>
+              Me lembra
+            </Text>
+          </View>
+          <View style={styles.subtitlePill}>
+            <Text
+              style={styles.subtitle}
+              maxFontSizeMultiplier={1.3}
+              accessibilityLabel={`Intervalo: ${subtitle}`}
+            >
+              {subtitle}
+            </Text>
+          </View>
         </View>
 
         <View style={styles.pickers}>
-          {/* Grupo INTERVALO: horas + minutos */}
+          {/* Grupo intervalo: horas + minutos */}
           <View style={styles.intervalGroup}>
-            <Text style={styles.sectionLabel} maxFontSizeMultiplier={1.3}>
-              INTERVALO
-            </Text>
             <HourPicker
               selected={config.hours}
               onSelect={setHours}
@@ -190,6 +203,7 @@ export default function HomeScreen() {
           </Pressable>
         </View>
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -205,6 +219,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  scrollContent: {
+    flexGrow: 1,
+  },
   container: {
     flex: 1,
     paddingHorizontal: 20,
@@ -215,14 +232,31 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     marginBottom: spacing.xl,
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  logo: {
+    width: 36,
+    height: 36,
+  },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
     color: colors.textPrimary,
   },
+  subtitlePill: {
+    alignSelf: 'flex-start',
+    backgroundColor: colors.accentMuted,
+    borderRadius: radii.chip,
+    borderCurve: 'continuous',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
   subtitle: {
     fontSize: 17,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.accent,
   },
   pickers: {
@@ -230,13 +264,6 @@ const styles = StyleSheet.create({
   },
   intervalGroup: {
     gap: spacing.md,
-  },
-  sectionLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 1.5,
-    color: colors.textSecondary,
-    marginLeft: 4,
   },
   testButton: {
     height: 44,

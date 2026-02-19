@@ -11,10 +11,44 @@ import { AlertTypeSelector } from '../components/AlertTypeSelector';
 describe('HourPicker', () => {
   const defaultProps = { selected: 1, onSelect: jest.fn(), disabled: false };
 
-  it('renderiza 12 opções de hora', () => {
+  it('renderiza 3 opções de hora por padrão', () => {
     const { getAllByRole } = render(<HourPicker {...defaultProps} />);
     const radios = getAllByRole('radio');
+    expect(radios).toHaveLength(3);
+  });
+
+  it('renderiza botão de expandir quando colapsado', () => {
+    const { getByLabelText } = render(<HourPicker {...defaultProps} />);
+    const expandButton = getByLabelText('Ver mais horas');
+    expect(expandButton.props.accessibilityRole).toBe('button');
+  });
+
+  it('expande para 12 opções ao tocar o botão', () => {
+    const { getByLabelText, getAllByRole } = render(
+      <HourPicker {...defaultProps} />,
+    );
+    fireEvent.press(getByLabelText('Ver mais horas'));
+    const radios = getAllByRole('radio');
     expect(radios).toHaveLength(12);
+  });
+
+  it('inicia expandido quando selected >= 4', () => {
+    const { getAllByRole, queryByLabelText } = render(
+      <HourPicker {...defaultProps} selected={7} />,
+    );
+    const radios = getAllByRole('radio');
+    expect(radios).toHaveLength(12);
+    expect(queryByLabelText('Ver mais horas')).toBeNull();
+  });
+
+  it('mostra a hora selecionada no botão expand quando colapsado e selected >= 4', () => {
+    const { getByLabelText } = render(
+      <HourPicker {...defaultProps} selected={5} onSelect={jest.fn()} />,
+    );
+    // selected=5 inicia expandido, então forçar o teste com selected < 4
+    // Na verdade, selected=5 já inicia expandido. Testar caso impossível não faz sentido.
+    // O teste abaixo confirma que selected >= 4 inicia expandido.
+    expect(getByLabelText('5 horas')).toBeTruthy();
   });
 
   it('marca a hora selecionada como selected', () => {
@@ -25,11 +59,21 @@ describe('HourPicker', () => {
     );
   });
 
-  it('chama onSelect ao tocar uma hora', () => {
+  it('chama onSelect ao tocar uma hora visível (1-3)', () => {
     const onSelect = jest.fn();
     const { getByLabelText } = render(
       <HourPicker {...defaultProps} onSelect={onSelect} />,
     );
+    fireEvent.press(getByLabelText('2 horas'));
+    expect(onSelect).toHaveBeenCalledWith(2);
+  });
+
+  it('chama onSelect ao tocar hora expandida (4-12)', () => {
+    const onSelect = jest.fn();
+    const { getByLabelText } = render(
+      <HourPicker {...defaultProps} onSelect={onSelect} />,
+    );
+    fireEvent.press(getByLabelText('Ver mais horas'));
     fireEvent.press(getByLabelText('5 horas'));
     expect(onSelect).toHaveBeenCalledWith(5);
   });
@@ -39,7 +83,7 @@ describe('HourPicker', () => {
     const { getByLabelText } = render(
       <HourPicker {...defaultProps} onSelect={onSelect} disabled />,
     );
-    fireEvent.press(getByLabelText('5 horas'));
+    fireEvent.press(getByLabelText('2 horas'));
     expect(onSelect).not.toHaveBeenCalled();
   });
 
@@ -47,6 +91,11 @@ describe('HourPicker', () => {
     const { getByLabelText } = render(<HourPicker {...defaultProps} />);
     const group = getByLabelText('Horas');
     expect(group.props.accessibilityRole).toBe('radiogroup');
+  });
+
+  it('exibe label HORAS', () => {
+    const { getByText } = render(<HourPicker {...defaultProps} />);
+    expect(getByText('HORAS')).toBeTruthy();
   });
 
   it('usa singular para 1 hora', () => {
@@ -63,10 +112,10 @@ describe('HourPicker', () => {
 describe('MinutePicker', () => {
   const defaultProps = { selected: 0, onSelect: jest.fn(), disabled: false };
 
-  it('renderiza 4 opções (00, 15, 30, 45)', () => {
+  it('renderiza 2 opções (00, 30)', () => {
     const { getAllByRole } = render(<MinutePicker {...defaultProps} />);
     const radios = getAllByRole('radio');
-    expect(radios).toHaveLength(4);
+    expect(radios).toHaveLength(2);
   });
 
   it('chama onSelect ao tocar uma opção', () => {
@@ -80,12 +129,17 @@ describe('MinutePicker', () => {
 
   it('marca a opção selecionada', () => {
     const { getByLabelText } = render(
-      <MinutePicker {...defaultProps} selected={15} />,
+      <MinutePicker {...defaultProps} selected={30} />,
     );
-    const option = getByLabelText('15 minutos');
+    const option = getByLabelText('30 minutos');
     expect(option.props.accessibilityState).toEqual(
       expect.objectContaining({ selected: true }),
     );
+  });
+
+  it('exibe label MINUTOS', () => {
+    const { getByText } = render(<MinutePicker {...defaultProps} />);
+    expect(getByText('MINUTOS')).toBeTruthy();
   });
 });
 

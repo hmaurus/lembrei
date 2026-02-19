@@ -17,8 +17,8 @@ describe('HOUR_OPTIONS', () => {
 });
 
 describe('MINUTE_OPTIONS', () => {
-  it('contém [0, 15, 30, 45]', () => {
-    expect(Array.from(MINUTE_OPTIONS)).toEqual([0, 15, 30, 45]);
+  it('contém [0, 30]', () => {
+    expect(Array.from(MINUTE_OPTIONS)).toEqual([0, 30]);
   });
 });
 
